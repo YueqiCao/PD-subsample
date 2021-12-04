@@ -29,6 +29,16 @@ def sample_torus(n, r1, r2):
 	X = np.array([x, y, z]).T
 	return X
 
+def sample_annulus(n, r1, r2):
+	theta = 2 * np.pi * np.random.rand(n)
+	rho = np.random.rand(n)
+
+	x = ((1-rho) * r1 + rho * r2) * np.cos(theta)
+	y = ((1-rho) * r1 + rho * r2) * np.sin(theta)
+
+	X = np.array([x, y]).T
+	return X
+
 def get_subsample(large_set, nb_sub_size, nb_sub):
 	"""
 	sample multiple subsets from original point set
