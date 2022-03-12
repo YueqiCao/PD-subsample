@@ -30,6 +30,10 @@ def sample_torus(n, r1, r2):
 	return X
 
 def sample_annulus(n, r1, r2):
+	"""
+	sample n points from an anulus 
+	with major radius r1 and minor radius r2
+	"""
 	theta = 2 * np.pi * np.random.rand(n)
 	rho = np.random.rand(n)
 
@@ -38,6 +42,18 @@ def sample_annulus(n, r1, r2):
 
 	X = np.array([x, y]).T
 	return X
+
+def rescale_points(points):
+	"""
+	rescale point cloud into a unit box
+	"""
+	for i in range(3):
+		max_scale = np.max(points[:,i])
+		min_scale = np.min(points[:,i])
+		a = 2/(max_scale-min_scale)
+		b = 1 - a * max_scale
+		points[:,i] = a * points[:,i] + b
+	return points
 
 def get_subsample(large_set, nb_sub_size, nb_sub):
 	"""
