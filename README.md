@@ -20,10 +20,15 @@ The repository is organized as follows:
 Please cite
 
 > @article{cao2022approximating,
+> 
 >  author = {Cao, Yueqi and Monod, Anthea},
+>  
 >  title = {Approximating Persistent Homology for Large Datasets},
+>  
 >  journal = {arXiv preprint arXiv:2204.09155},
+>  
 >  year = {2022}
+>  
 >  }
 
  
