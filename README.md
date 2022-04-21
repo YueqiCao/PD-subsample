@@ -1,6 +1,6 @@
 # Approximating the persistent homology of large datsets using mean persistence measures and Fréchet means
 
-This repository contains codes to implement the numerical experiments in [Approximating Persistent Homology for Large Datasets]().
+This repository contains codes to implement the numerical experiments in [Approximating Persistent Homology for Large Datasets](https://arxiv.org/abs/2204.09155).
 
 Computing persistent diagrams for extremely large data sets is prohibitive. One way to bypass this difficulty is to draw subsamples from the large data set. Then the mean of persistence diagrams of subsamples *approximates* the persistence diagram of the original data. 
 
@@ -19,6 +19,11 @@ The repository is organized as follows:
 
 Please cite
 
-> 
+> @article{cao2022approximating,
+  author = {Cao, Yueqi and Monod, Anthea},
+  title = {Approximating Persistent Homology for Large Datasets},
+  journal = {arXiv preprint arXiv:2204.09155},
+  year = {2022}
+  }
 
  
