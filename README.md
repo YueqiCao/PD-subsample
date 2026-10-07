@@ -1,4 +1,4 @@
-# Approximating the persistent homology of large datsets using mean persistence measures and Fréchet means
+# Approximating persistent homology via multiple subsampling
 
 This repository contains codes to implement the numerical experiments in [Approximating Persistent Homology for Large Datasets](https://arxiv.org/abs/2204.09155).
 
@@ -15,16 +15,35 @@ The repository is organized as follows:
 - `data`: a file containing input data;
 - `outputs`: a file containing output results.
 
+## Required Libraries
+
+
+| Package | Version |
+| --- | --- |
+| Python | 3.12.15 | 
+| NumPy | 2.5.3 | 
+| SciPy | 1.18.1 | 
+| Matplotlib | 3.11.2 | 
+| GUDHI | 3.12.0 | 
+| POT | 0.9.7.post1 | 
+| plyfile | 1.1 | 
+| scikit-learn | 1.9.1 | 
+| umap-learn | 0.5.12 | 
+
+
 ## Academic Use
 
 Please cite
 
-> @article{cao2022approximating,  
->  author = {Cao, Yueqi and Monod, Anthea},  
->  title = {Approximating Persistent Homology for Large Datasets},  
->  journal = {arXiv preprint arXiv:2204.09155},  
->  year = {2022}  
->  }
+> @misc{cao2026approximatingpersistenthomologylarge,
+>       title={Approximating Persistent Homology for Large Datasets}, 
+>       author={Yueqi Cao and Anthea Monod},
+>       year={2026},
+>       eprint={2204.09155},
+>       archivePrefix={arXiv},
+>       primaryClass={stat.ML},
+>       url={https://arxiv.org/abs/2204.09155},
+> }
 
 
  
