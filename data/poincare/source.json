@@ -1,0 +1,145 @@
+{
+  "source_folder": "PD application code/Poincare embedding",
+  "relations_source": "https://github.com/facebookresearch/poincare-embeddings",
+  "words": "words.npy; all embeddings share this row order",
+  "conversion": "Original text word2vec vectors parsed as float64 and reordered by word; no retraining or rescaling.",
+  "embeddings": [
+    {
+      "file": "embedding_dim2_epoch20.npy",
+      "source": "Poincare embedding\\model\\test_vectors_20",
+      "shape": [
+        1182,
+        2
+      ]
+    },
+    {
+      "file": "embedding_dim2_epoch50.npy",
+      "source": "Poincare embedding\\model\\test_vectors_50",
+      "shape": [
+        1182,
+        2
+      ]
+    },
+    {
+      "file": "embedding_dim2_epoch150.npy",
+      "source": "Poincare embedding\\model\\test_vectors_150",
+      "shape": [
+        1182,
+        2
+      ]
+    },
+    {
+      "file": "embedding_dim2_epoch200.npy",
+      "source": "Poincare embedding\\model\\test_vectors_200",
+      "shape": [
+        1182,
+        2
+      ]
+    },
+    {
+      "file": "embedding_dim5_epoch20.npy",
+      "source": "Poincare embedding\\model\\dim5_vectors_20",
+      "shape": [
+        1182,
+        5
+      ]
+    },
+    {
+      "file": "embedding_dim5_epoch50.npy",
+      "source": "Poincare embedding\\model\\dim5_vectors_50",
+      "shape": [
+        1182,
+        5
+      ]
+    },
+    {
+      "file": "embedding_dim5_epoch150.npy",
+      "source": "Poincare embedding\\model\\dim5_vectors_150",
+      "shape": [
+        1182,
+        5
+      ]
+    },
+    {
+      "file": "embedding_dim5_epoch200.npy",
+      "source": "Poincare embedding\\model\\dim5_vectors_200",
+      "shape": [
+        1182,
+        5
+      ]
+    },
+    {
+      "file": "embedding_dim10_epoch20.npy",
+      "source": "Poincare embedding\\model\\dim10_vectors_20",
+      "shape": [
+        1182,
+        10
+      ]
+    },
+    {
+      "file": "embedding_dim10_epoch50.npy",
+      "source": "Poincare embedding\\model\\dim10_vectors_50",
+      "shape": [
+        1182,
+        10
+      ]
+    },
+    {
+      "file": "embedding_dim10_epoch150.npy",
+      "source": "Poincare embedding\\model\\dim10_vectors_150",
+      "shape": [
+        1182,
+        10
+      ]
+    },
+    {
+      "file": "embedding_dim10_epoch200.npy",
+      "source": "Poincare embedding\\model\\dim10_vectors_200",
+      "shape": [
+        1182,
+        10
+      ]
+    },
+    {
+      "file": "embedding_dim20_epoch20.npy",
+      "source": "Poincare embedding\\model\\dim20_vectors_20",
+      "shape": [
+        1182,
+        20
+      ]
+    },
+    {
+      "file": "embedding_dim20_epoch50.npy",
+      "source": "Poincare embedding\\model\\dim20_vectors_50",
+      "shape": [
+        1182,
+        20
+      ]
+    },
+    {
+      "file": "embedding_dim20_epoch150.npy",
+      "source": "Poincare embedding\\model\\dim20_vectors_150",
+      "shape": [
+        1182,
+        20
+      ]
+    },
+    {
+      "file": "embedding_dim20_epoch200.npy",
+      "source": "Poincare embedding\\model\\dim20_vectors_200",
+      "shape": [
+        1182,
+        20
+      ]
+    }
+  ],
+  "upstream_license": {
+    "source": "https://raw.githubusercontent.com/facebookresearch/poincare-embeddings/main/LICENSE",
+    "file": "LICENSE-UPSTREAM.txt",
+    "name": "CC BY-NC 4.0"
+  },
+  "wordnet_notice": {
+    "source": "https://wordnetcode.princeton.edu/3.0/LICENSE",
+    "file": "LICENSE-WORDNET.txt"
+  }
+}

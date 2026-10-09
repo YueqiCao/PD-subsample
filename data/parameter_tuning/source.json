@@ -1,0 +1,16 @@
+{
+  "torus": {
+    "file": "torus.npy",
+    "source": "PD application code/tuning parameters/true-torus-points.npy",
+    "points": 50000
+  },
+  "sphere": {
+    "file": "sphere.npy",
+    "source": "Seeded implementation of getNSphere(3, 0.5, 500000) in tuning cells.ipynb",
+    "seed": 20211121,
+    "points": 500000,
+    "ambient_dimension": 3,
+    "radius": 0.5,
+    "note": "Retains the original tuning notebook S^2 in R^3; distinct from the sphere-rate S^3 experiment."
+  }
+}
