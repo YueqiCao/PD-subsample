@@ -1,8 +1,17 @@
-"""Cluster Bearing and Motor shapes using subsampled H1 summaries."""
+'''
+Cluster the Bearing and Motor shapes using multiple subsampling.
+
+Run from the repository directory:
+    python scripts/shape_clustering.py --subsamples 15 --subsample-size 1500 --methods mpm
+
+To compute both MPM and Frechet mean from the same subsamples:
+    python scripts/shape_clustering.py --subsamples 15 --subsample-size 1500 --methods mpm fm
+
+Diagrams are saved automatically and reused when the command is rerun.
+'''
 
 import argparse
 import csv
-import hashlib
 import json
 import sys
 from importlib.metadata import version
@@ -23,13 +32,18 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import ApproxPH as ph
 
+SEED = 20211121
+DATA = ROOT / "data"
+CLUSTERING = {
+    "mpm": dict(neighbors=15, eps=1.75, min_samples=10, seed=30),
+    "fm": dict(neighbors=10, eps=2.0, min_samples=10, seed=20),
+}
+
 
 def normalize_shape(points):
     points = np.asarray(points, dtype=float)
     low, high = points.min(axis=0), points.max(axis=0)
     span = (high - low).max()
-    if not np.isfinite(points).all() or span <= 0:
-        raise ValueError("Expected a finite, nonconstant point cloud.")
     return (points - (low + high) / 2) * (2 / span)
 
 
@@ -37,10 +51,6 @@ def mean_measure(diagrams):
     mean = np.zeros(ph.mat_size)
     for diagram in diagrams:
         for birth, death in diagram:
-            if not np.isfinite([birth, death]).all() or not 0 <= birth <= death <= ph.grid_width:
-                raise ValueError("Expected finite diagrams within the persistence grid.")
-            if death <= birth:
-                continue
             i = min(int(np.floor(birth / ph.unit)), ph.nb_units - 1)
             j = min(int(np.ceil(death / ph.unit)), ph.nb_units)
             j = max(j, i + 1)
@@ -50,20 +60,13 @@ def mean_measure(diagrams):
 
 def diagram_bank(path, index, args, cache):
     settings = dict(object=f"{path.parent.name}/{path.name}",
-                    sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
-                    seed=args.seed + 10000 * index, n=args.subsample_size, B=args.subsamples,
+                    seed=SEED + 10000 * index, n=args.subsample_size, B=args.subsamples,
                     normalization="isotropic_bbox", cutoff=0.4, min_persistence=0.03, sparse=0.3)
     destination = cache / f"{path.parent.name}_{path.stem}.npz"
     if destination.exists():
         with np.load(destination) as saved:
-            if json.loads(str(saved["settings"])) != settings:
-                raise ValueError(f"Diagram settings or input changed: {destination}. Use a new cache.")
             return [saved[f"diagram_{i}"] for i in range(args.subsamples)]
-    if args.diagrams:
-        raise FileNotFoundError(f"Missing saved diagram bank: {destination}")
     points = normalize_shape(np.load(path))
-    if args.subsample_size > len(points):
-        raise ValueError(f"Subsample size exceeds {path.name}'s point count.")
     rng = np.random.default_rng(settings["seed"])
     diagrams = []
     for _ in range(args.subsamples):
@@ -90,7 +93,7 @@ def distance_matrix(summaries, method):
     return distances
 
 
-def cluster(distances, truth, neighbors=15, eps=1.0, min_samples=10, seed=30):
+def cluster(distances, truth, neighbors=15, eps=1.75, min_samples=10, seed=30):
     embedding = umap.UMAP(metric="precomputed", n_neighbors=neighbors, min_dist=0.1,
                           random_state=seed, n_jobs=1).fit_transform(distances)
     labels = DBSCAN(eps=eps, min_samples=min_samples).fit_predict(embedding)
@@ -125,38 +128,21 @@ def plot_clusters(embedding, labels, truth, method, destination):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data", type=Path, default=ROOT / "data")
-    parser.add_argument("--output", type=Path, default=ROOT / "outputs/experiments/shape_clustering")
-    parser.add_argument("--diagrams", type=Path, help="Reuse a previous run's diagrams directory.")
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--output", type=Path, default=ROOT / "outputs/shape_clustering")
     parser.add_argument("--methods", choices=["mpm", "fm"], nargs="+", default=["mpm"])
     parser.add_argument("--subsample-size", type=int, default=1500)
     parser.add_argument("--subsamples", type=int, default=15)
-    parser.add_argument("--seed", type=int, default=20211121)
-    parser.add_argument("--neighbors", type=int, help="UMAP neighbors: MPM 15, FM 10 by default.")
-    parser.add_argument("--eps", type=float, help="DBSCAN radius: MPM 1, FM 2 by default.")
-    parser.add_argument("--min-samples", type=int, default=10)
-    parser.add_argument("--umap-seed", type=int, help="UMAP seed: MPM 30, FM 20 by default.")
-    parser.add_argument("--limit-per-class", type=int, help="Use a small subset for a smoke test.")
     args = parser.parse_args()
     files = []
     for name in ("Bearing", "Motor"):
-        group = sorted((args.data / name).glob("*.npy"), key=lambda path: int(path.stem))
-        files.extend(group[:args.limit_per_class])
-    method_settings = {}
-    for method in args.methods:
-        neighbors, eps, seed = (15, 1.0, 30) if method == "mpm" else (10, 2.0, 20)
-        method_settings[method] = dict(neighbors=args.neighbors if args.neighbors is not None else neighbors,
-                                       eps=args.eps if args.eps is not None else eps,
-                                       seed=args.umap_seed if args.umap_seed is not None else seed,
-                                       min_samples=args.min_samples)
-    args.output.mkdir(parents=True, exist_ok=False)
-    cache = args.diagrams or args.output / "diagrams"
-    if not args.diagrams:
-        cache.mkdir()
+        files.extend(sorted((DATA / name).glob("*.npy"), key=lambda path: int(path.stem)))
+    args.output.mkdir(parents=True, exist_ok=True)
+    cache = args.output / "diagrams"
+    cache.mkdir(exist_ok=True)
     config = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
     config.update(objects=[f"{path.parent.name}/{path.name}" for path in files],
-                  clustering=method_settings,
+                  seed=SEED, clustering={method: CLUSTERING[method] for method in args.methods},
                   normalization="isotropic_bbox", cutoff=0.4, min_persistence=0.03, sparse=0.3,
                   grid_units=ph.nb_units, grid_width=ph.grid_width, quantization="birth-death",
                   mpm_distance="OT2",
@@ -164,7 +150,6 @@ def main():
                   versions={name: version(name) for name in
                             ("numpy", "scipy", "gudhi", "POT", "umap-learn", "scikit-learn")},
                   python=sys.version.split()[0])
-    (args.output / "settings.json").write_text(json.dumps(config, indent=2), encoding="utf8")
     summaries = {method: [] for method in args.methods}
     start = perf_counter()
     for index, path in enumerate(files):
@@ -176,10 +161,11 @@ def main():
             summaries["fm"].append(lagrangian_barycenter(diagrams, init=0))
         print(f"{index + 1}/{len(files)}: {path.parent.name}/{path.name}", flush=True)
     truth = np.array([path.parent.name for path in files])
+    (args.output / "settings.json").write_text(json.dumps(config, indent=2), encoding="utf8")
     reports = {}
     for method, values in summaries.items():
         distances = distance_matrix(values, method)
-        embedding, labels, scores = cluster(distances, truth, **method_settings[method])
+        embedding, labels, scores = cluster(distances, truth, **CLUSTERING[method])
         np.savez_compressed(args.output / f"{method}.npz", distances=distances,
                             embedding=embedding, labels=labels, truth=truth)
         plot_clusters(embedding, labels, truth, method, args.output / f"{method}.png")
