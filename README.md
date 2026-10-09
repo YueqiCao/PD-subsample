@@ -7,7 +7,6 @@ Computing persistent diagrams for extremely large data sets is prohibitive. One 
 
 ## Required Libraries
 
-
 | Package | Version |
 | --- | --- |
 | Python | 3.12.15 | 
@@ -19,13 +18,43 @@ Computing persistent diagrams for extremely large data sets is prohibitive. One 
 | plyfile | 1.1 | 
 | scikit-learn | 1.9.1 | 
 | umap-learn | 0.5.12 | 
+| Gensim | 4.4.0 |
+
+(*Gensim is needed only for `scripts/train_poincare.py`.*)
 
 ## Usage
 
 The repository is organized as follows:
 
-
-
+```text
+.
+├── ApproxPH.py                 # Multiple subsampling and persistence measure utilities
+├── tutorial.ipynb              # Tutorial and large point cloud illustration
+├── scripts/
+│   ├── torus_rate.py           # Torus convergence rate experiment
+│   ├── sphere_rate.py          # Sphere convergence rate experiment
+│   ├── shape_clustering.py     # Clustering of bearing and motor shapes
+│   ├── knot_lock.py            # Persistent homology approximation for Knot and Lock
+│   ├── parameter_tuning.py     # Subsample size, count, and transport power tuning
+│   ├── poincare_embedding.py   # Permutation tests for Poincaré embeddings
+│   └── train_poincare.py       # Training Poincaré embeddings from WordNet relations
+├── data/
+│   ├── Bearing/               # Bearing point clouds
+│   ├── Motor/                 # Motor point clouds
+│   ├── knot.ply               # Knot point cloud
+│   ├── grayloc.ply            # Lock point cloud
+│   ├── parameter_tuning/      # Torus and sphere point clouds
+│   └── poincare/              # Embeddings, word labels, relations, and source licenses
+├── outputs/                   # Saved experiment results (partially, due to repo size)
+│   ├── torus_rate/
+│   ├── sphere_rate/
+│   ├── shape_clustering/
+│   ├── knot_lock/
+│   ├── parameter_tuning/
+│   └── poincare_embedding/
+├── LICENSE                    
+└── README.md
+```
 
 ## Academic Use
 
